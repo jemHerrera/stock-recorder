@@ -1,5 +1,4 @@
-import { Options } from "@mikro-orm/core";
-import { MikroORM, PostgreSqlDriver } from "@mikro-orm/postgresql";
+import { PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { Record } from "./entities/Record";
 import "reflect-metadata";
 

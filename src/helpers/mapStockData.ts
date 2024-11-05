@@ -1,25 +1,21 @@
-import { StockData } from "../types/StockData";
+import { parse } from "path";
+import { Record as RecordEntity } from "../entities/Record";
+import { StockDataSchema } from "../types/StockData";
 
-export function mapStockData(data: Record<string, string>): StockData | null {
+export function mapStockData(
+  data: Record<string, string>
+): Omit<RecordEntity, "created" | "updated" | "id"> | undefined {
   if (
     !data["Ticker"] ||
-    !data["Beta"] ||
-    !data["ATR"] ||
-    !data["SMA20"] ||
-    !data["SMA50"] ||
-    !data["SMA200"] ||
-    !data["52W High"] ||
-    !data["52W Low"] ||
-    !data["RSI"] ||
     !data["Price"] ||
     !data["Change"] ||
     !data["from Open"] ||
     !data["Gap"] ||
     !data["Volume"]
   )
-    return null;
+    return undefined;
 
-  return {
+  const parsedData = {
     ticker: data["Ticker"],
     beta: parseFloat(data["Beta"]),
     atr: parseFloat(data["ATR"]),
@@ -35,4 +31,25 @@ export function mapStockData(data: Record<string, string>): StockData | null {
     gap: parseFloat(data["Gap"].replace("%", "")),
     volume: parseInt(data["Volume"].replace(/,/g, "")),
   };
+
+  const { success } = StockDataSchema.safeParse(parsedData);
+
+  if (success)
+    return {
+      ticker: parsedData.ticker,
+      beta: parsedData.beta.toString(),
+      atr: parsedData.atr.toString(),
+      sma20_percent: parsedData.sma20_percent.toString(),
+      sma50_percent: parsedData.sma50_percent.toString(),
+      sma200_percent: parsedData.sma200_percent.toString(),
+      high_52w_percent: parsedData.high_52w_percent.toString(),
+      low_52w_percent: parsedData.low_52w_percent.toString(),
+      rsi: parsedData.rsi.toString(),
+      price: parsedData.price.toString(),
+      change_percent: parsedData.change_percent.toString(),
+      from_open_percent: parsedData.from_open_percent.toString(),
+      gap: parsedData.gap.toString(),
+      volume: parsedData.volume,
+    };
+  return undefined;
 }

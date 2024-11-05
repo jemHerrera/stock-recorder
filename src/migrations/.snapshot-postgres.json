@@ -27,111 +27,135 @@
         },
         "beta": {
           "name": "beta",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "atr": {
           "name": "atr",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "sma20_percent": {
           "name": "sma20_percent",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "sma50_percent": {
           "name": "sma50_percent",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "sma200_percent": {
           "name": "sma200_percent",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "high_52w_percent": {
           "name": "high_52w_percent",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "low_52w_percent": {
           "name": "low_52w_percent",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "rsi": {
           "name": "rsi",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "price": {
           "name": "price",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "change_percent": {
           "name": "change_percent",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "from_open_percent": {
           "name": "from_open_percent",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "gap": {
           "name": "gap",
-          "type": "int",
+          "type": "numeric(10,2)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "precision": 10,
+          "scale": 2,
+          "mappedType": "decimal"
         },
         "volume": {
           "name": "volume",

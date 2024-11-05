@@ -1,4 +1,4 @@
-import { Entity, Property, PrimaryKey } from "@mikro-orm/core";
+import { Entity, Property, PrimaryKey, DecimalType } from "@mikro-orm/core";
 
 @Entity({ tableName: "record" })
 export class Record {
@@ -8,41 +8,41 @@ export class Record {
   @Property({ type: "string" })
   ticker!: string;
 
-  @Property({ type: "number" })
-  beta!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  beta?: string;
 
-  @Property({ type: "number" })
-  atr!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  atr?: string;
 
-  @Property({ type: "number" })
-  sma20_percent!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  sma20_percent?: string;
 
-  @Property({ type: "number" })
-  sma50_percent!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  sma50_percent?: string;
 
-  @Property({ type: "number" })
-  sma200_percent!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  sma200_percent?: string;
 
-  @Property({ type: "number" })
-  high_52w_percent!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  high_52w_percent?: string;
 
-  @Property({ type: "number" })
-  low_52w_percent!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  low_52w_percent?: string;
 
-  @Property({ type: "number" })
-  rsi!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2, nullable: true })
+  rsi?: string;
 
-  @Property({ type: "number" })
-  price!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2 })
+  price!: string;
 
-  @Property({ type: "number" })
-  change_percent!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2 })
+  change_percent!: string;
 
-  @Property({ type: "number" })
-  from_open_percent!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2 })
+  from_open_percent!: string;
 
-  @Property({ type: "number" })
-  gap!: number;
+  @Property({ type: DecimalType, precision: 10, scale: 2 })
+  gap!: string;
 
   @Property({ type: "number" })
   volume!: number;
