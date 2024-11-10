@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "record": "ts-node src/record.ts",
+    "record": "ts-node src/index.ts",
     "migrate": "ts-node src/migrate.ts",
     "create-migration": "ts-node src/createMigration.ts"
   },

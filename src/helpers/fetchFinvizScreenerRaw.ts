@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function fetchFinvizScreenerRaw(filters: string) {
   try {
-    const response = await axios.get(
+    const response = await axios.get<string>(
       `https://finviz.com/screener.ashx?${filters}`,
       {
         headers: {
@@ -16,6 +16,7 @@ export async function fetchFinvizScreenerRaw(filters: string) {
 
     return response.data;
   } catch (error) {
-    console.error("Error fetching screener:", error);
+    console.error("Error fetching screener.");
+    return null;
   }
 }
