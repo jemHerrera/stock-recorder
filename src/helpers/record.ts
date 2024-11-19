@@ -18,9 +18,9 @@ export async function record(
     const entries = await parseFinvizScreener(filter + `&r=${pageOffset}`);
     const tickers = entries?.map((r) => r.ticker) ?? [];
 
-    endOfResults = Boolean(
-      tickers.find((entry) => pageTickers.includes(entry))
-    );
+    endOfResults =
+      Boolean(tickers.find((entry) => pageTickers.includes(entry))) ||
+      tickers.length < 1;
 
     if (endOfResults) break;
 
