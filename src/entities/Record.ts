@@ -1,5 +1,12 @@
-import { Entity, Property, PrimaryKey, DecimalType } from "@mikro-orm/core";
+import {
+  Entity,
+  Property,
+  PrimaryKey,
+  DecimalType,
+  Unique,
+} from "@mikro-orm/core";
 
+@Unique({ properties: ["ticker", "volume", "change_percent"] })
 @Entity({ tableName: "record" })
 export class Record {
   @PrimaryKey({ type: "number" })
@@ -48,8 +55,8 @@ export class Record {
   volume!: number;
 
   @Property({ type: "date" })
-  created: Date = new Date();
+  date: Date = new Date();
 
-  @Property({ type: "date", onUpdate: () => new Date() })
-  updated: Date = new Date();
+  @Property({ type: "number" })
+  consecutiveDays!: number;
 }

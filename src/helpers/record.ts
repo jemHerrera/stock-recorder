@@ -10,13 +10,20 @@ export async function record(
 ) {
   console.log(`Starting ${filter}`);
 
+  const orm = await MikroORM.init(mikroOrmConfig);
+  const em = orm.em.fork();
+
   let pageOffset = startOffset;
   let pageTickers: string[] = [];
   let endOfResults = false;
 
+  // TODO: const previousDayRecords get all previous day's records. using 4pmET - 1 day
+
   while (!endOfResults) {
     const entries = await parseFinvizScreener(filter + `&r=${pageOffset}`);
     const tickers = entries?.map((r) => r.ticker) ?? [];
+
+    // TODO: const isDuplicate : Check if todays' entries are duplicate of the previous day. use array.find
 
     endOfResults =
       Boolean(tickers.find((entry) => pageTickers.includes(entry))) ||
@@ -24,18 +31,22 @@ export async function record(
 
     if (endOfResults) break;
 
-    const orm = await MikroORM.init(mikroOrmConfig);
-    const em = orm.em.fork();
-
     entries.forEach((row) => {
+      // TODO: Check if ticker exists on previous day as well. Add consecutive days +1
       em.create(Record, {
         ...row,
-        created: new Date(),
-        updated: new Date(),
+        // date: TODO: Use getMostRecent4pmET, so all time falls at 4pm ET
       });
     });
 
-    await em.flush();
+    try {
+      await em.flush();
+    } catch (e) {
+      console.log(
+        "Error occured in creating record. A duplicate record is possibly being added. "
+      );
+      break;
+    }
 
     console.log("Offset:", pageOffset, "Length:", tickers.length);
 
