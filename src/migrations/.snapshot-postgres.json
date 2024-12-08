@@ -166,8 +166,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "created": {
-          "name": "created",
+        "date": {
+          "name": "date",
           "type": "date",
           "unsigned": false,
           "autoincrement": false,
@@ -176,20 +176,31 @@
           "length": 0,
           "mappedType": "date"
         },
-        "updated": {
-          "name": "updated",
-          "type": "date",
+        "consecutive_days": {
+          "name": "consecutive_days",
+          "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 0,
-          "mappedType": "date"
+          "mappedType": "integer"
         }
       },
       "name": "record",
       "schema": "public",
       "indexes": [
+        {
+          "keyName": "record_ticker_volume_change_percent_unique",
+          "columnNames": [
+            "ticker",
+            "volume",
+            "change_percent"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
         {
           "keyName": "record_pkey",
           "columnNames": [

@@ -1,10 +1,9 @@
-import { parse } from "path";
 import { Record as RecordEntity } from "../entities/Record";
 import { StockDataSchema } from "../types/StockData";
 
 export function mapStockData(
   data: Record<string, string>
-): Omit<RecordEntity, "created" | "updated" | "id"> | undefined {
+): Omit<RecordEntity, "date" | "consecutiveDays" | "id"> | undefined {
   if (
     !data["Ticker"] ||
     !data["Price"] ||

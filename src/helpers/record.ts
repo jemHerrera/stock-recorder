@@ -2,6 +2,7 @@ import { parseFinvizScreener } from "./parseFinvizScreener";
 import { MikroORM } from "@mikro-orm/core";
 import mikroOrmConfig from "../mikroOrmConfig";
 import { Record } from "../entities/Record";
+import { getLast4pmET } from "./getLast4pmET";
 
 export async function record(
   filter: string,
@@ -17,13 +18,16 @@ export async function record(
   let pageTickers: string[] = [];
   let endOfResults = false;
 
-  // TODO: const previousDayRecords get all previous day's records. using 4pmET - 1 day
+  const last4pm = getLast4pmET();
+  const previousDay = getLast4pmET(new Date(last4pm));
+
+  const previousDayRecords = await em.find(Record, {
+    date: { $eq: previousDay },
+  });
 
   while (!endOfResults) {
     const entries = await parseFinvizScreener(filter + `&r=${pageOffset}`);
     const tickers = entries?.map((r) => r.ticker) ?? [];
-
-    // TODO: const isDuplicate : Check if todays' entries are duplicate of the previous day. use array.find
 
     endOfResults =
       Boolean(tickers.find((entry) => pageTickers.includes(entry))) ||
@@ -32,10 +36,18 @@ export async function record(
     if (endOfResults) break;
 
     entries.forEach((row) => {
-      // TODO: Check if ticker exists on previous day as well. Add consecutive days +1
+      const previousDayTicker = previousDayRecords.find(
+        (record) => record.ticker === row.ticker
+      );
+
+      const consecutiveDays = previousDayTicker
+        ? previousDayTicker.consecutiveDays + 1
+        : 1;
+
       em.create(Record, {
         ...row,
-        // date: TODO: Use getMostRecent4pmET, so all time falls at 4pm ET
+        date: last4pm,
+        consecutiveDays,
       });
     });
 
