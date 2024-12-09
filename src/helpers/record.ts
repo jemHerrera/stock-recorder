@@ -1,8 +1,11 @@
 import { parseFinvizScreener } from "./parseFinvizScreener";
-import { Loaded, MikroORM, PopulatePath } from "@mikro-orm/core";
+import { MikroORM } from "@mikro-orm/core";
 import mikroOrmConfig from "../mikroOrmConfig";
 import { Record } from "../entities/Record";
 import { getLast4pmET } from "./getLast4pmET";
+import { serializeRecord } from "./serializeRecord";
+import { isHoliday } from "./isHoliday";
+import { DateTime } from "luxon";
 
 export async function record(
   filter: string,
@@ -14,29 +17,39 @@ export async function record(
   const orm = await MikroORM.init(mikroOrmConfig);
   const em = orm.em.fork();
 
+  let pageOffset = startOffset;
+  let pageTickers: string[] = [];
+  let endOfResults = false;
+
   const last4pm = getLast4pmET();
+  const previousDay = getLast4pmET(new Date(last4pm));
+  let previousRecords = await em.find(Record, {
+    date: { $eq: previousDay },
+  });
 
-  let pageOffset = startOffset,
-    pageTickers: string[] = [],
-    endOfResults = false,
-    previousDay = getLast4pmET(new Date(last4pm)),
-    previousDayRecords: Loaded<Record, never, PopulatePath.ALL, never>[] = [],
-    previousDayCounter = 0;
+  // Handles if previous day is a Holiday
+  if (!previousRecords.length && isHoliday(DateTime.fromISO(previousDay))) {
+    const dayBeforePreviousDay = getLast4pmET(new Date(previousDay));
 
-  while (!previousDayRecords.length) {
-    previousDayRecords = await em.find(Record, {
-      date: { $eq: previousDay },
+    previousRecords = await em.find(Record, {
+      date: { $eq: dayBeforePreviousDay },
     });
-
-    previousDay = getLast4pmET(new Date(previousDay));
-    previousDayCounter++;
-
-    if (previousDayCounter === 3) break;
   }
 
   while (!endOfResults) {
     const entries = await parseFinvizScreener(filter + `&r=${pageOffset}`);
     const tickers = entries?.map((r) => r.ticker) ?? [];
+
+    const previousDaySet = new Set(previousRecords.map(serializeRecord));
+
+    const hasDuplicate = entries.some((entry) =>
+      previousDaySet.has(serializeRecord(entry))
+    );
+
+    if (hasDuplicate) {
+      console.log("Duplicates found.");
+      break;
+    }
 
     endOfResults =
       Boolean(tickers.find((entry) => pageTickers.includes(entry))) ||
@@ -45,7 +58,7 @@ export async function record(
     if (endOfResults) break;
 
     entries.forEach((row) => {
-      const previousDayTicker = previousDayRecords.find(
+      const previousDayTicker = previousRecords.find(
         (record) => record.ticker === row.ticker
       );
 
@@ -79,4 +92,6 @@ export async function record(
   }
 
   console.log(`End of results for ${filter}`);
+
+  orm.close();
 }
