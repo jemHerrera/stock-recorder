@@ -1,5 +1,5 @@
 import { parseFinvizScreener } from "./parseFinvizScreener";
-import { MikroORM } from "@mikro-orm/core";
+import { Loaded, MikroORM, PopulatePath } from "@mikro-orm/core";
 import mikroOrmConfig from "../mikroOrmConfig";
 import { Record } from "../entities/Record";
 import { getLast4pmET } from "./getLast4pmET";
@@ -14,16 +14,25 @@ export async function record(
   const orm = await MikroORM.init(mikroOrmConfig);
   const em = orm.em.fork();
 
-  let pageOffset = startOffset;
-  let pageTickers: string[] = [];
-  let endOfResults = false;
-
   const last4pm = getLast4pmET();
-  const previousDay = getLast4pmET(new Date(last4pm));
 
-  const previousDayRecords = await em.find(Record, {
-    date: { $eq: previousDay },
-  });
+  let pageOffset = startOffset,
+    pageTickers: string[] = [],
+    endOfResults = false,
+    previousDay = getLast4pmET(new Date(last4pm)),
+    previousDayRecords: Loaded<Record, never, PopulatePath.ALL, never>[] = [],
+    previousDayCounter = 0;
+
+  while (!previousDayRecords.length) {
+    previousDayRecords = await em.find(Record, {
+      date: { $eq: previousDay },
+    });
+
+    previousDay = getLast4pmET(new Date(previousDay));
+    previousDayCounter++;
+
+    if (previousDayCounter === 3) break;
+  }
 
   while (!endOfResults) {
     const entries = await parseFinvizScreener(filter + `&r=${pageOffset}`);
