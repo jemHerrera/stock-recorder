@@ -12,7 +12,10 @@ export async function record(
   startOffset: number = 1,
   delayMs: number = 5000
 ) {
-  console.log(`Starting ${filter}`);
+  const last4pm = getLast4pmET();
+  const previousDay = getLast4pmET(new Date(last4pm));
+
+  console.log(`Starting ${filter} for ${last4pm}...`);
 
   const orm = await MikroORM.init(mikroOrmConfig);
   const em = orm.em.fork();
@@ -21,8 +24,6 @@ export async function record(
   let pageTickers: string[] = [];
   let endOfResults = false;
 
-  const last4pm = getLast4pmET();
-  const previousDay = getLast4pmET(new Date(last4pm));
   let previousRecords = await em.find(Record, {
     date: { $eq: previousDay },
   });
