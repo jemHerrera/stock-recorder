@@ -67,14 +67,7 @@ export async function record(
         ? previousDayTicker.consecutiveDays + 1
         : 1;
 
-      const fourthDayGapUp =
-        consecutiveDays === 2 &&
-        Number(previousDayTicker?.change_percent) > 0 &&
-        Number(row.change_percent) > 0;
-
-      if (fourthDayGapUp) {
-        console.log(`Detected fourth day gap up pattern: ${row.ticker}`);
-      }
+      // Insert alerts here
 
       em.create(Record, {
         ...row,
