@@ -68,6 +68,16 @@ export async function record(
         : 1;
 
       // Insert alerts here
+      const darkChildAlert =
+        consecutiveDays === 1 &&
+        Number(row.gap) > -5 &&
+        Number(row.from_open_percent) > -5 &&
+        Number(row.beta) > 0 &&
+        Number(row.price) > 2;
+
+      if (darkChildAlert) {
+        console.log(`Darkchild alert: ${row.ticker}`);
+      }
 
       em.create(Record, {
         ...row,

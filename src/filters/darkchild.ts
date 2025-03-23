@@ -1,8 +1,10 @@
 /* Darkchild: 
 Second day open buy
-Day 1 gap > 7%
-Day 1 from open > 7%
-Day 2 gap > -5%
+Day 1 gap > -5%
+Day 1 from open > -5%
+Day 1 beta > 0
+Day 1 price > 2
+Day 2 gap > 5%
 */
 import { MikroORM } from "@mikro-orm/core";
 import fs from "fs";
