@@ -8,7 +8,7 @@ export function mapStockData(
     !data["Ticker"] ||
     !data["Price"] ||
     !data["Change"] ||
-    !data["from Open"] ||
+    !data["Change from Open"] ||
     !data["Gap"] ||
     !data["Volume"]
   )
@@ -26,7 +26,7 @@ export function mapStockData(
     rsi: parseFloat(data["RSI"]),
     price: parseFloat(data["Price"]),
     change_percent: parseFloat(data["Change"].replace("%", "")),
-    from_open_percent: parseFloat(data["from Open"].replace("%", "")),
+    from_open_percent: parseFloat(data["Change from Open"].replace("%", "")),
     gap: parseFloat(data["Gap"].replace("%", "")),
     volume: parseInt(data["Volume"].replace(/,/g, "")),
   };

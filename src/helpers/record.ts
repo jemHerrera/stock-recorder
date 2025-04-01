@@ -15,7 +15,7 @@ export async function record(
   const last4pm = getLast4pmET();
   const previousDay = getLast4pmET(new Date(last4pm));
 
-  console.log(`Starting ${filter} for ${last4pm}...`);
+  console.log(`Starting for ${new Date(last4pm).toISOString()}`);
 
   const orm = await MikroORM.init(mikroOrmConfig);
   const em = orm.em.fork();
@@ -66,18 +66,6 @@ export async function record(
       const consecutiveDays = previousDayTicker
         ? previousDayTicker.consecutiveDays + 1
         : 1;
-
-      // Insert alerts here
-      const darkChildAlert =
-        consecutiveDays === 1 &&
-        Number(row.gap) > -5 &&
-        Number(row.from_open_percent) > -5 &&
-        Number(row.beta) > 0 &&
-        Number(row.price) > 2;
-
-      if (darkChildAlert) {
-        console.log(`Darkchild alert: ${row.ticker}`);
-      }
 
       em.create(Record, {
         ...row,

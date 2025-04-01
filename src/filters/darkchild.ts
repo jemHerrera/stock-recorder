@@ -53,7 +53,7 @@ import { Output, transformToColumns } from "../types/output";
               Number(day1.gap) < -5 ||
               Number(day1.beta) < 0 ||
               Number(day1.price) < 2 ||
-              Number(day2.gap) < 5
+              Number(day2.gap) < 1
             )
               return;
 

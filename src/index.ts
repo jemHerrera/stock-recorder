@@ -1,8 +1,7 @@
 import { record } from "./helpers/record";
 
 (async () => {
-  const DOWN_10 = "v=171&f=geo_usa,ta_change_d10&ft=3";
-  const UP_10 = "v=171&f=geo_usa,ta_change_u10";
-  await record(DOWN_10);
-  await record(UP_10);
+  const BASE_SCREENER =
+    "v=171&f=geo_usa,ta_perf_4wup,ta_perf2_ytdup,ta_sma50_pa,ta_volatility_mo2&ft=3";
+  await record(BASE_SCREENER);
 })();

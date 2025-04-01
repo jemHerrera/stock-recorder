@@ -5,7 +5,6 @@ import { Record } from "../entities/Record";
 
 export async function parseFinvizScreener(filter: string) {
   const rawHtml = await fetchFinvizScreenerRaw(filter);
-
   if (!rawHtml) return [];
 
   const table = extractFinvizTable(rawHtml);
