@@ -9,7 +9,7 @@ import { DateTime } from "luxon";
 
 export async function record(
   filter: string,
-  startOffset: number = 1,
+  startOffset: number = 0,
   delayMs: number = 5000
 ) {
   const last4pm = getLast4pmET();
@@ -78,9 +78,8 @@ export async function record(
       await em.flush();
     } catch (e) {
       console.log(
-        "Error occured in creating record. A duplicate record is possibly being added. "
+        "Error occured in creating record. A duplicate record is possibly being added."
       );
-      break;
     }
 
     console.log("Offset:", pageOffset, "Length:", tickers.length);
