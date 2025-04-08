@@ -58,7 +58,7 @@ export async function record(
 
     if (endOfResults) break;
 
-    entries.forEach((row) => {
+    for (const row of entries) {
       const previousDayTicker = previousRecords.find(
         (record) => record.ticker === row.ticker
       );
@@ -72,15 +72,18 @@ export async function record(
         date: last4pm,
         consecutiveDays,
       });
-    });
 
-    try {
-      await em.flush();
-    } catch (e) {
-      console.log(
-        "Error occured in creating record. A duplicate record is possibly being added."
-      );
+      try {
+        await em.flush();
+
+        console.log(`Saved ${row.ticker}`);
+      } catch (e) {
+        console.log(
+          `Error occured for ${row.ticker}. A duplicate record is possibly being added.`
+        );
+      }
     }
+    entries.forEach((row) => {});
 
     console.log("Offset:", pageOffset, "Length:", tickers.length);
 
