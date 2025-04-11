@@ -40,23 +40,7 @@ export async function record(
   while (!endOfResults) {
     const entries = await parseFinvizScreener(filter + `&r=${pageOffset}`);
     const tickers = entries?.map((r) => r.ticker) ?? [];
-
-    const previousDaySet = new Set(previousRecords.map(serializeRecord));
-
-    const hasDuplicate = entries.some((entry) =>
-      previousDaySet.has(serializeRecord(entry))
-    );
-
-    if (hasDuplicate) {
-      console.log("Duplicates found.");
-      break;
-    }
-
-    endOfResults =
-      Boolean(tickers.find((entry) => pageTickers.includes(entry))) ||
-      tickers.length < 1;
-
-    if (endOfResults) break;
+    let successCount = 0;
 
     for (const row of entries) {
       const previousDayTicker = previousRecords.find(
@@ -77,13 +61,16 @@ export async function record(
         await em.flush();
 
         console.log(`Saved ${row.ticker}`);
+        successCount++;
       } catch (e) {
         console.log(
           `Error occured for ${row.ticker}. A duplicate record is possibly being added.`
         );
       }
     }
-    entries.forEach((row) => {});
+
+    const endOfResults = successCount === 0;
+    if (endOfResults) break;
 
     console.log("Offset:", pageOffset, "Length:", tickers.length);
 
