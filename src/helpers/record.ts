@@ -3,7 +3,6 @@ import { MikroORM } from "@mikro-orm/core";
 import mikroOrmConfig from "../mikroOrmConfig";
 import { Record } from "../entities/Record";
 import { getLast4pmET } from "./getLast4pmET";
-import { serializeRecord } from "./serializeRecord";
 import { isHoliday } from "./isHoliday";
 import { DateTime } from "luxon";
 
@@ -15,7 +14,7 @@ export async function record(
   const last4pm = getLast4pmET();
   const previousDay = getLast4pmET(new Date(last4pm));
 
-  console.log(`Starting for ${new Date(last4pm).toISOString()}`);
+  console.log(`Starting for ${new Date(last4pm).toDateString()}`);
 
   const orm = await MikroORM.init(mikroOrmConfig);
   const em = orm.em.fork();
@@ -81,7 +80,7 @@ export async function record(
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
 
-  console.log(`End of results for ${filter}`);
+  console.log(`End of results for ${new Date(last4pm).toDateString()}`);
 
   orm.close();
 }
