@@ -184,6 +184,15 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "streak_number": {
+          "name": "streak_number",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
         }
       },
       "name": "record",

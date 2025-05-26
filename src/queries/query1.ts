@@ -26,6 +26,7 @@ export const query1 = `
     LEFT JOIN record prev
       ON r.ticker = prev.ticker
      AND r.consecutive_days = prev.consecutive_days + 1
+     AND r.streak_number = prev.streak_number
     WHERE r.gap > 5
       AND r.from_open_percent > 5
       AND (

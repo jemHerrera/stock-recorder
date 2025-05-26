@@ -62,13 +62,17 @@ import { query1 } from "../queries/query1";
       )
     ).filter(Boolean) as Output[];
 
-    const dataSet = transformToColumns(nextDayRecords);
+    const recordMap = new Map(
+      nextDayRecords.map((r) => [`${r.ticker}${r.date}`, r])
+    );
+
+    const dataSet = transformToColumns(Array.from(recordMap.values()));
 
     // OUTPUT JSON FILE
     fs.writeFileSync("output.json", JSON.stringify(dataSet, null, 2), "utf-8");
 
     // OUTPUT CSV FILE
-    const csv = jsonToCsv(nextDayRecords);
+    const csv = jsonToCsv(Array.from(recordMap.values()));
     fs.writeFileSync("output.csv", csv, "utf-8");
 
     orm.close();

@@ -20,7 +20,6 @@ export async function record(
   const em = orm.em.fork();
 
   let pageOffset = startOffset;
-  let pageTickers: string[] = [];
   let endOfResults = false;
 
   let previousRecords = await em.find(Record, {
@@ -50,10 +49,24 @@ export async function record(
         ? previousDayTicker.consecutiveDays + 1
         : 1;
 
+      const lastRecord = await em.findOne(
+        Record,
+        { ticker: row.ticker },
+        { orderBy: { date: "DESC_NULLS_LAST" } }
+      );
+
+      const streakNumber =
+        consecutiveDays === 1
+          ? lastRecord?.streakNumber
+            ? lastRecord?.streakNumber + 1
+            : 1
+          : (previousDayTicker?.streakNumber as number);
+
       em.create(Record, {
         ...row,
         date: last4pm,
         consecutiveDays,
+        streakNumber,
       });
 
       try {
@@ -73,7 +86,6 @@ export async function record(
 
     console.log("Offset:", pageOffset, "Length:", tickers.length);
 
-    pageTickers = tickers;
     pageOffset += 20;
 
     // Wait to avoid rate limits

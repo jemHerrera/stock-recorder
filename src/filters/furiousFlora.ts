@@ -1,10 +1,10 @@
-/* Furious Flora: 
-Third day open buy
-Day 1 from open > 0
-Day 2 from open > 0
-Day 3 gap > -5%
+/* furiousFlora: 
+Second day open buy
+Day 0 gap < 2%
+Day 0 from open < 2%
+Day 1 gap > 5%
+Day 1 from open > 5%
 */
-
 import { MikroORM } from "@mikro-orm/core";
 import fs from "fs";
 
@@ -12,6 +12,7 @@ import mikroOrmConfig from "../mikroOrmConfig";
 import { Record } from "../entities/Record";
 import { jsonToCsv } from "../helpers/jsonToCsv";
 import { Output, transformToColumns } from "../types/output";
+import { query1 } from "../queries/query1";
 
 (async () => {
   console.log("Starting furiousFlora.");
@@ -24,75 +25,57 @@ import { Output, transformToColumns } from "../types/output";
     const em = orm.em.fork();
     const limit = pLimit(20);
 
-    const day4Records = await em.find(Record, { consecutiveDays: 4 });
+    const records = await em.getConnection().execute(query1);
 
-    const output: Output[] = (
+    const nextDayRecords = (
       await Promise.all(
-        day4Records.map(async (day3) => {
+        records.map(async (r) => {
           return limit(async () => {
-            const [day2, day1] = await em.find(
-              Record,
-              {
-                consecutiveDays: {
-                  $in: [2, 1],
-                },
-                ticker: day3.ticker,
-                date: { $lt: day3.date },
-              },
-              {
-                orderBy: {
-                  date: "DESC NULLS LAST",
-                },
-                limit: 3,
-              }
-            );
-
-            if (
-              Number(day2.beta) < 0 ||
-              Number(day1.price) > 1 ||
-              Number(day2.from_open_percent) < 0 ||
-              Number(day1.from_open_percent) < 0 ||
-              Number(day3.gap) < -5
-            )
-              return;
+            const record = await em.findOne(Record, {
+              ticker: r.ticker,
+              consecutiveDays: r.consecutive_days + 1,
+            });
+            if (!record) return;
 
             return {
-              ticker: day2.ticker,
-              date: day2.date,
-              change_percent: Number(day2.change_percent),
-              from_open_percent: Number(day2.from_open_percent),
-              gap: Number(day2.gap),
-              change_percent_pre: Number(day1.change_percent),
-              from_open_percent_pre: Number(day1.from_open_percent),
-              gap_pre: Number(day1.gap),
-              beta_pre: Number(day1.beta),
-              atr_pre: Number(day1.atr),
-              sma20_percent_pre: Number(day1.sma20_percent),
-              sma50_percent_pre: Number(day1.sma50_percent),
-              sma200_percent_pre: Number(day1.sma200_percent),
-              high_52w_percent_pre: Number(day1.high_52w_percent),
-              low_52w_percent_pre: Number(day1.low_52w_percent),
-              rsi_pre: Number(day1.rsi),
-              price_pre: Number(day1.price),
-              volume_pre: Number(day1.volume),
+              ticker: record.ticker,
+              date: record.date,
+              change_percent: Number(record.change_percent),
+              from_open_percent: Number(record.from_open_percent),
+              gap: Number(record.gap),
+              change_percent_pre: Number(r.change_percent),
+              from_open_percent_pre: Number(r.from_open_percent),
+              gap_pre: Number(r.gap),
+              beta_pre: Number(r.beta),
+              atr_pre: Number(r.atr),
+              sma20_percent_pre: Number(r.sma20_percent),
+              sma50_percent_pre: Number(r.sma50_percent),
+              sma200_percent_pre: Number(r.sma200_percent),
+              high_52w_percent_pre: Number(r.high_52w_percent),
+              low_52w_percent_pre: Number(r.low_52w_percent),
+              rsi_pre: Number(r.rsi),
+              price_pre: Number(r.price),
+              volume_pre: Number(r.volume),
             };
           });
         })
       )
     ).filter(Boolean) as Output[];
 
-    const dataSet = transformToColumns(output);
+    const recordMap = new Map(
+      nextDayRecords.map((r) => [`${r.ticker}${r.date}`, r])
+    );
+
+    const dataSet = transformToColumns(Array.from(recordMap.values()));
 
     // OUTPUT JSON FILE
     fs.writeFileSync("output.json", JSON.stringify(dataSet, null, 2), "utf-8");
 
     // OUTPUT CSV FILE
-    const csv = jsonToCsv(output);
+    const csv = jsonToCsv(Array.from(recordMap.values()));
     fs.writeFileSync("output.csv", csv, "utf-8");
 
     orm.close();
-
-    const timestamp = new Date().getTime();
   } catch (e: any) {
     console.error(`Error in 'inspect': ${JSON.stringify(e)}`);
 

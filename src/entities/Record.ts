@@ -59,4 +59,7 @@ export class Record {
 
   @Property({ type: "number" })
   consecutiveDays!: number;
+
+  @Property({ type: "number", nullable: true })
+  streakNumber?: number;
 }
