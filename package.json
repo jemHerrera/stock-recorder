@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@mikro-orm/core": "6.3.13",
-    "@mikro-orm/migrations": "^6.3.13",
+    "@mikro-orm/migrations": "6.3.13",
     "@mikro-orm/postgresql": "6.3.13",
     "@mikro-orm/reflection": "6.3.13",
     "axios": "1.7.7",
