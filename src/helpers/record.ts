@@ -12,7 +12,7 @@ export async function record(
   delayMs: number = 5000
 ) {
   const last4pm = getLast4pmET();
-  const previousDay = getLast4pmET(new Date(last4pm));
+  const marketDay = getLast4pmET(new Date(last4pm));
 
   console.log(`Starting for ${new Date(last4pm).toDateString()}`);
 
@@ -23,15 +23,15 @@ export async function record(
   let endOfResults = false;
 
   let previousRecords = await em.find(Record, {
-    date: { $eq: previousDay },
+    date: { $eq: marketDay },
   });
 
   // Handles if previous day is a Holiday
-  if (!previousRecords.length && isHoliday(DateTime.fromISO(previousDay))) {
-    const dayBeforePreviousDay = getLast4pmET(new Date(previousDay));
+  if (!previousRecords.length && isHoliday(DateTime.fromISO(marketDay))) {
+    const dayBeforeMarketDay = getLast4pmET(new Date(marketDay));
 
     previousRecords = await em.find(Record, {
-      date: { $eq: dayBeforePreviousDay },
+      date: { $eq: dayBeforeMarketDay },
     });
   }
 
@@ -52,7 +52,7 @@ export async function record(
       const lastRecord = await em.findOne(
         Record,
         { ticker: row.ticker },
-        { orderBy: { date: "DESC_NULLS_LAST" } }
+        { orderBy: { date: "DESC" } }
       );
 
       const streakNumber =
